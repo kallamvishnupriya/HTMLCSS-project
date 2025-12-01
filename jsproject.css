@@ -40,15 +40,15 @@ header{
   z-index:60;
   backdrop-filter:blur(6px);
 }
-.nav-inner{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:10px 18px;
-  border-radius:12px;
-  background:var(--glass);
-  margin:0 12px
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* keeps logo left, actions right */
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: var(--glass);
 }
+
 
 .brand{display:flex;gap:12px;align-items:center}
 .logo{
@@ -65,7 +65,13 @@ nav a{
 }
 nav a:hover{background:rgba(0,0,0,0.06)}
 
-.actions{display:flex;gap:10px;align-items:center}
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-shrink: 0; /* prevent shrinking */
+}
+
 .btn{
   background:var(--accent);color:white;
   padding:10px 14px;border-radius:10px;
@@ -274,3 +280,23 @@ footer{padding:40px 0;color:var(--muted)}
 /* small helpers */
 .muted{color:var(--muted)}
 .hide{display:none}
+/* ===== Header Responsive / Hamburger ===== */
+@media (max-width: 1024px) {
+  nav {
+    display: none; /* hide menu */
+  }
+
+  #mobile-menu {
+    display: block;
+  }
+
+  .actions {
+    order: 2; /* stays last in nav-inner */
+    margin-left: auto; /* push to far right */
+    flex-wrap: nowrap; /* keep icons in one line */
+  }
+
+  .brand {
+    order: 1;
+  }
+}
