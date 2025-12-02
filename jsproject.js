@@ -1,225 +1,278 @@
-// --------------------------
-// SAMPLE MENU DATA
-// --------------------------
-const MENU = [
-  {id:1,name:'Margherita Pizza',cat:'mains',price:399,veg:true,desc:'Classic pizza with tomato, mozzarella & basil',emoji:'🍕'},
-  {id:2,name:'Garlic Bread',cat:'starters',price:499,veg:true,desc:'Toasted bread with garlic butter',emoji:'🥖'},
-  {id:3,name:'Butter Chicken',cat:'mains',price:399,veg:false,desc:'Creamy spiced tomato gravy with tender chicken',emoji:'🍛'},
-  {id:4,name:'Caesar Salad',cat:'starters',price:199,veg:false,desc:'Romaine, parmesan, croutons & Caesar dressing',emoji:'🥗'},
-  {id:5,name:'Chocolate Lava Cake',cat:'dessert',price:199,veg:true,desc:'Warm molten cake with vanilla ice cream',emoji:'🍰'},
-  {id:6,name:'Cold Brew',cat:'drinks',price:159,veg:true,desc:'Slow-brewed coffee, chilled',emoji:'🥤'},
-  {id:7,name:'Paneer Tikka',cat:'starters',price:299,veg:true,desc:'Smoky grilled paneer with spices',emoji:'🧀'},
-  {id:8,name:'Pepperoni Pizza',cat:'mains',price:399,veg:false,desc:'Pepperoni, cheese & tomato',emoji:'🍕'},
-  {id:9,name:'Tiramisu',cat:'dessert',price:699,veg:true,desc:'Coffee-soaked ladyfingers & mascarpone',emoji:'☕'},
-];
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DelishBite — Restaurant</title>
+  <meta name="description" content="DelishBite - Fresh food & cozy vibes. Order online, book a table, view our menu.">
+  <link href="jsproject.css" rel="stylesheet">
+</head>
 
-// --------------------------
-// CART STATE
-// --------------------------
-let cart = JSON.parse(localStorage.getItem('delish_cart') || '[]');
+<body>
+    <header>
+        <div class="nav-inner container">
 
-// --------------------------
-// DOM ELEMENTS
-// --------------------------
-const cartIcon = document.getElementById('cartIcon');
-const cartCountEl  = document.getElementById('cartCount');
-const cartDrawer   = document.getElementById('cartDrawer');
-const cartListEl   = document.getElementById('cartItems');
-const cartTotalEl  = document.getElementById('cartTotal');
-const closeDrawerBtn = document.getElementById('closeCart');
-const mobileMenuBtn = document.getElementById('mobile-menu');
-const navLinks = document.getElementById('nav-links');
-const themeBtn = document.getElementById('theme-toggle');
+        <div class="brand">
+            <div class="logo">DB</div>
+            <div>
+            <div style="font-weight:800">DelishBite</div>
+            <div class="muted" style="font-size:12px">Fresh • Local • Tasty</div>
+            </div>
+        </div>
 
-// --------------------------
-// MENU RENDER
-// --------------------------
-function renderMenu(filter='all', vegOnly=false){
-  const grid = document.getElementById('menu-grid');
-  grid.innerHTML = '';
+        <nav>
+            <ul id="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#menu">Menu</a></li>
+            <li><a href="#reserve">Reserve</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
 
-  const items = MENU.filter(i => 
-    (filter === 'all' || i.cat === filter) &&
-    (!vegOnly || i.veg)
-  );
+        <!-- UPDATED ACTIONS WITH CART ICON -->
+        <div class="actions">
+            <button id="theme-toggle" class="ghost" title="Toggle dark">🌓</button>
 
-  items.forEach(it=>{
-    const div = document.createElement('div');
-    div.className = 'menu-item';
-    div.innerHTML = `
-      <div style="font-size:34px">${it.emoji}</div>
-      <div class="meta">
-        <h4>${it.name} <span class="muted" style="font-weight:600;font-size:13px">${it.veg?'• veg':''}</span></h4>
-        <div class="muted" style="font-size:13px">${it.desc}</div>
-      </div>
-      <div style="text-align:right">
-        <div class="price">₹${it.price.toFixed(2)}</div>
-        <div style="margin-top:8px">
-          <button class="ghost" onclick="openDetails(${it.id})">Details</button>
-          <button class="add" onclick="addToCart(${it.id})">Add</button>
+            <!-- NEW CART ICON -->
+            <div class="cart-icon" id="cartIcon">
+            🛒
+            <span id="cartCount" class="cart-count">0</span>
+            </div>
+
+            <button id="mobile-menu" class="ghost hide">☰</button>
+        </div>
+
+        </div>
+    </header>
+
+
+  <main class="container">
+
+    <section id="home" class="hero">
+      <div class="hero-left">
+        <h1>Good food. Good mood.</h1>
+        <p>Welcome to DelishBite — award-winning flavors, local ingredients, cozy vibes. Order online or book a table.</p>
+
+        <!-- <div style="display:flex;gap:10px">
+          <button class="btn" onclick="scrollToSection('menu')">View Menu</button>
+          <button class="ghost" onclick="scrollToSection('reserve')">Book a Table</button>
+        </div> -->
+
+        <!-- <div style="margin-top:18px" class="hero-card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="dish-preview">
+              <div class="dish-thumb">🍕</div>
+              <div style="line-height:1">
+                <div style="font-weight:800">Margherita Pizza</div>
+                <div class="muted" style="font-size:13px">San Marzano | Fresh Basil</div>
+              </div>
+            </div> -->
+
+            <!-- <div style="text-align:right">
+              <div style="font-weight:900">$12</div>
+              <div class="muted" style="font-size:13px">Ready in 12–15 min</div>
+            </div> -->
+          </div>
         </div>
       </div>
-    `;
-    grid.appendChild(div);
-  });
-}
 
-renderMenu();
-
-// --------------------------
-// MENU FILTERS
-// --------------------------
-document.querySelectorAll('.chip').forEach(ch => {
-  ch.addEventListener('click', () => {
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-    ch.classList.add('active');
-    renderMenu(ch.dataset.type, document.getElementById('veg-only').checked);
-  });
-});
-
-document.getElementById('veg-only').addEventListener('change', (e) => {
-  const active = document.querySelector('.chip.active');
-  renderMenu(active.dataset.type, e.target.checked);
-});
-
-// --------------------------
-// CART FUNCTIONS
-// --------------------------
-function saveCart(){
-  localStorage.setItem('delish_cart', JSON.stringify(cart));
-  renderCart();
-}
-
-function addToCart(id){
-  const item = MENU.find(m=>m.id===id);
-  const exists = cart.find(c=>c.id===id);
-
-  if(exists){
-    exists.qty++;
-  } else {
-    cart.push({id:item.id,name:item.name,price:item.price,qty:1});
-  }
-
-  saveCart();
-  openCart();
-}
-
-function renderCart(){
-  cartListEl.innerHTML = '';
-  if(cart.length === 0){
-    cartListEl.innerHTML = '<div class="cart-empty">Your cart is empty</div>';
-    cartCountEl.textContent = '0';
-    cartTotalEl.textContent = '0.00';
-    return;
-  }
-
-  let total = 0;
-  cart.forEach(it=>{
-    total += it.price * it.qty;
-    const el = document.createElement('div');
-    el.className = 'cart-item';
-    el.innerHTML = `
-      <div>
-        <strong>${it.name}</strong>
-        <div class="muted">₹${it.price.toFixed(2)} each</div>
+      <div class="hero-right">
+        <img src="https://media.istockphoto.com/id/1829241109/photo/enjoying-a-brunch-together.jpg?s=612x612&w=0&k=20&c=9awLLRMBLeiYsrXrkgzkoscVU_3RoVwl_HA-OT-srjQ=" alt="hero" style="width:100%;border-radius:16px;display:block">
       </div>
-      <div style="text-align:right">
-        <div class="qty">
-          <button class="icon-btn" onclick="changeQty(${it.id},-1)">-</button>
-          <div style="min-width:22px;text-align:center">${it.qty}</div>
-          <button class="icon-btn" onclick="changeQty(${it.id},1)">+</button>
+    </section>
+
+
+    <section id="about">
+      <h2>About Us</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Our story</h3>
+          <p class="muted">Started in 2018 with a tiny wood-fired oven and a single belief: real food tastes like time and care. We source locally and cook with love.</p>
         </div>
-        <div style="margin-top:8px">₹${(it.price * it.qty).toFixed(2)}</div>
-        <button class="ghost" style="margin-top:8px" onclick="removeItem(${it.id})">Remove</button>
+
+        <div class="card">
+          <h3>Chef</h3>
+          <p class="muted">Chef Alina leads the kitchen with a modern twist on classic comfort – seasonal menus, handmade sauces, and a smile.</p>
+        </div>
+
+        <div class="card">
+          <h3>Ambience</h3>
+          <p class="muted">Cozy tables, warm lights, and a playlist that makes time slow down just enough to enjoy the meal.</p>
+        </div>
       </div>
-    `;
-    cartListEl.appendChild(el);
-  });
+    </section>
 
-  cartCountEl.textContent = cart.reduce((s,i)=>s+i.qty, 0);
-  cartTotalEl.textContent = "₹" + total.toFixed(2);
-}
 
-function changeQty(id, delta){
-  const it = cart.find(c=>c.id===id);
-  if(!it) return;
-  it.qty += delta;
-  if(it.qty <= 0) cart = cart.filter(c => c.id !== id);
-  saveCart();
-}
+    <section id="menu">
+      <h2>Menu</h2>
 
-function removeItem(id){
-  cart = cart.filter(c=>c.id!==id);
-  saveCart();
-}
+      <div class="menu-controls">
+        <button class="chip active" data-type="all">All</button>
+        <button class="chip" data-type="starters">Starters</button>
+        <button class="chip" data-type="mains">Mains</button>
+        <button class="chip" data-type="dessert">Dessert</button>
+        <button class="chip" data-type="drinks">Drinks</button>
 
-function openCart(){
-  cartDrawer.classList.add('open');
-  renderCart();
-}
+        <div style="flex:1"></div>
 
-cartIcon.addEventListener('click', openCart);
-closeDrawerBtn.addEventListener('click', ()=> cartDrawer.classList.remove('open'));
+        <label class="muted" style="font-size:13px">
+          Veg only <input id="veg-only" type="checkbox" style="margin-left:6px">
+        </label>
+      </div>
 
-// --------------------------
-// MODAL (ITEM DETAILS)
-// --------------------------
-function openDetails(id){
-  const m = MENU.find(x=>x.id===id);
-  const modal = document.getElementById('modal-content');
-  modal.innerHTML = `
-    <div style="display:flex;gap:12px">
-      <div style="font-size:46px">${m.emoji}</div>
-      <div>
-        <h3>${m.name}</h3>
-        <p class='muted'>${m.desc}</p>
-        <p style='font-weight:900'>₹${m.price.toFixed(2)}</p>
-        <div style='margin-top:10px'>
-          <button class='add' onclick='addToCart(${m.id}); closeModal();'>Add to cart</button>
+      <div class="menu-grid" id="menu-grid">
+        <!-- JS: menu items injected here -->
+      </div>
+    </section>
+
+
+    <section id="reserve">
+      <h2>Reserve a Table</h2>
+
+      <div style="display:grid;grid-template-columns:1fr 380px;gap:18px">
+        <div class="card">
+          <form id="reserve-form">
+            <div class="row">
+              <input required placeholder="Your name" id="res-name">
+              <input required placeholder="Phone" id="res-phone">
+            </div>
+
+            <div class="row">
+              <input type="date" required id="res-date">
+              <input type="time" required id="res-time">
+            </div>
+
+            <div class="row">
+              <select id="res-guests" required>
+                <option value="1">1 guest</option>
+                <option value="2">2 guests</option>
+                <option value="3">3 guests</option>
+                <option value="4">4 guests</option>
+                <option value="5">5 guests</option>
+                <option value="6">6 guests</option>
+              </select>
+              <button type="submit" class="btn">Book Table</button>
+            </div>
+
+            <textarea id="res-note" placeholder="Any notes (allergies, requests)" rows="3"></textarea>
+            <div id="reserve-msg" class="muted"></div>
+          </form>
         </div>
+
+
+        <div class="card">
+          <h4>Today's Special</h4>
+          <p class="muted">20% off on all pizzas between 5pm–7pm. Use code: PIZZA20</p>
+
+          <div style="margin-top:12px;font-weight:800">Chef's Tip</div>
+          <p class="muted">Try the honey-lavender panna cotta for a sweet end.</p>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="gallery">
+    <h2>Gallery</h2>
+    <div class="gallery" id="gallery-grid">
+        <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=60" alt="gallery 1">
+        <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=800&q=60" alt="gallery 2">
+        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=60" alt="gallery 3">
+        <img src="https://thumbs.dreamstime.com/b/restaurant-dish-delivery-catering-dinner-dishes-boxes-top-view-free-space-your-text-rustic-style-164640708.jpg" alt="gallery 4">
+        <img src="https://robbreport.com/wp-content/uploads/2020/12/manti-dumplings-albi-dc.jpg?w=1000" alt="gallery 5">
+        <img src="https://robbreport.com/wp-content/uploads/2020/12/grilled-dorade-vernick-fish.jpg?w=1000" alt="gallery 6">
+        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=60" alt="gallery 7">
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=60" alt="gallery 8">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWWVCwSDZXgmTEC6Lu5Fg0OcTDsnpxqTatpQ&s" alt="gallery 9">
+        <img src="https://www.thespruceeats.com/thmb/H0YjdoMIhz0VqvbQskQYq3VWnqo=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/BakedStuffedLobster-TheSpruce_DianaChistruga-3fcb6301491a4be193ecf40d0735e8d1.jpg" alt="gallery 10">
+        <img src="https://www.bdtask.com/blog/assets/plugins/ckfinder/core/connector/php/uploads/images/quick-pancake.webp" alt="gallery 11">
+        <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=800&q=60" alt="gallery 12">
+    </div>
+    </section>
+
+
+
+    <section id="testimonials">
+    <h2>What People Say</h2>
+        <div class="card testimonials-list">
+            <div class="testimonial"><strong>Ravi</strong><div class="muted">"Best pizza in town — crust to remember!"</div></div>
+            <div class="testimonial"><strong>Sana</strong><div class="muted">"Lovely place for dates, food is consistently great."</div></div>
+            <div class="testimonial"><strong>Arjun</strong><div class="muted">"Fast delivery, hot and exactly as ordered."</div></div>
+        </div>
+    </section>
+
+
+
+    <section id="contact">
+      <h2>Contact & Location</h2>
+      <div class="grid">
+
+        <div class="card">
+          <h4>Address</h4>
+          <p class="muted">12 Flavor Street, Foodville</p>
+
+          <h4>Phone</h4>
+          <p class="muted">+91 98765 43210</p>
+
+          <h4>Hours</h4>
+          <p class="muted">Daily 11:00 — 22:00</p>
+        </div>
+
+        <div class="card">
+          <h4>Send us a message</h4>
+          <form id="contact-form">
+            <input id="c-name" placeholder="Name" required>
+            <input id="c-email" placeholder="Email" required>
+            <textarea id="c-msg" rows="3" placeholder="Message" required></textarea>
+
+            <div class="row">
+              <button class="btn" type="submit">Send</button>
+              <div id="contact-res" class="muted" style="align-self:center"></div>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+
+    <footer>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <div class="muted">© DelishBite • Built with ❤️</div>
+        <div class="muted">Follow: @delishbite</div>
+      </div>
+    </footer>
+
+  </main>
+
+
+  <!-- NEW CART DRAWER (RIGHT SIDE) -->
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h2>Your Cart</h2>
+      <span id="closeCart" class="close-cart">✖</span>
+    </div>
+
+    <div id="cartItems" class="cart-items">
+      <!-- Items added dynamically -->
+    </div>
+
+    <div class="cart-footer">
+      <h3>Total: ₹<span id="cartTotal">0</span></h3>
+    </div>
+  </aside>
+
+
+  <!-- Modal (same as before) -->
+  <div class="modal-back" id="modal-back">
+    <div class="modal" id="modal">
+      <div id="modal-content"></div>
+      <div style="margin-top:12px;text-align:right">
+        <button id="close-modal" class="ghost">Close</button>
       </div>
     </div>
-  `;
-  document.getElementById('modal-back').style.display = 'flex';
-}
+  </div>
 
-function closeModal(){
-  document.getElementById('modal-back').style.display = 'none';
-}
-
-document.getElementById('modal-back').addEventListener('click', (e)=>{
-  if(e.target.id==='modal-back') closeModal();
-});
-document.getElementById('close-modal').addEventListener('click', closeModal);
-
-// --------------------------
-// THEME TOGGLE
-// --------------------------
-themeBtn.addEventListener('click', ()=>{
-  if(document.documentElement.getAttribute('data-theme')==='dark'){
-    document.documentElement.removeAttribute('data-theme');
-    localStorage.removeItem('delish_theme');
-  } else {
-    document.documentElement.setAttribute('data-theme','dark');
-    localStorage.setItem('delish_theme','dark');
-  }
-});
-
-if(localStorage.getItem('delish_theme')==='dark'){
-  document.documentElement.setAttribute('data-theme','dark');
-}
-
-// --------------------------
-// MOBILE MENU TOGGLE
-// --------------------------
-mobileMenuBtn.addEventListener('click', () => {
-  navLinks.classList.toggle('open'); // toggle the 'open' class
-});
-
-
-// --------------------------
-// EXPOSE FUNCTIONS GLOBALLY
-// --------------------------
-window.addToCart = addToCart;
-window.openCart = openCart;
-window.closeModal = closeModal;
+  <script src="jsproject.js"></script>
+</body>
+</html>
