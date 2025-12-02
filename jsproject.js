@@ -11,6 +11,9 @@ const MENU = [
   {id:7,name:'Paneer Tikka',cat:'starters',price:299,veg:true,desc:'Smoky grilled paneer with spices',emoji:'🧀'},
   {id:8,name:'Pepperoni Pizza',cat:'mains',price:399,veg:false,desc:'Pepperoni, cheese & tomato',emoji:'🍕'},
   {id:9,name:'Tiramisu',cat:'dessert',price:699,veg:true,desc:'Coffee-soaked ladyfingers & mascarpone',emoji:'☕'},
+  {id:10,name:'Frostberry Mist',cat:'drinks',price:159,veg:true,desc:'A cool, sparkling blend of wild berries with an icy finish.',emoji:'🫐'},
+  {id:11,name:'Sunrise Cheese Puffs',cat:'starters',price:299,veg:true,desc:'Warm, airy puffs bursting with molten cheese',emoji:'🧀'},
+  {id:12,name:'Truffle Drift Deluxe',cat:'mains',price:399,veg:false,desc:'Rich truffle cream paired with mushrooms and parmesan flakes.',emoji:'🍄'},
 ];
 
 // --------------------------
@@ -64,7 +67,7 @@ function renderMenu(filter='all', vegOnly=false){
   });
 }
 
-
+renderMenu();
 
 // --------------------------
 // MENU FILTERS
@@ -222,5 +225,62 @@ mobileMenuBtn.addEventListener('click', () => {
 // --------------------------
 window.addToCart = addToCart;
 window.openCart = openCart;
-window.closeModal = closeModal;
-renderMenu();
+window.closeModal = closeModal;
+
+// --------------------------
+// LOGIN MODAL
+// --------------------------
+const loginBack = document.getElementById('login-back');
+const loginForm = document.getElementById('login-form');
+const guestBtn = document.getElementById('guest-login');
+const closeLoginBtn = document.getElementById('close-login');
+const loginBtn = document.getElementById('login-btn');
+
+function openLogin() {
+  loginBack.style.display = 'flex';
+}
+
+function closeLogin() {
+  loginBack.style.display = 'none';
+}
+
+// Open login modal
+loginBtn.addEventListener('click', openLogin);
+
+// Close modal
+closeLoginBtn.addEventListener('click', closeLogin);
+loginBack.addEventListener('click', e => {
+  if (e.target.id === 'login-back') closeLogin();
+});
+
+// Handle guest login
+guestBtn.addEventListener('click', () => {
+  localStorage.setItem('delish_user', JSON.stringify({type: 'guest'}));
+  closeLogin();
+  alert("Logged in as guest!");
+});
+
+// Handle registered login (dummy example)
+loginForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+
+  if(email === "user@example.com" && password === "1234"){
+    localStorage.setItem('delish_user', JSON.stringify({type:'registered', email}));
+    closeLogin();
+    alert("Logged in successfully!");
+  } else {
+    alert("Invalid credentials");
+  }
+});
+document.getElementById('reserve-form').addEventListener('submit', e=>{
+  e.preventDefault();
+  const user = JSON.parse(localStorage.getItem('delish_user'));
+  if(!user){
+    openLogin();
+  } else {
+    alert("Table booked!");
+    // Your existing reservation code here
+  }
+});
