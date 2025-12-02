@@ -1,4 +1,6 @@
-// Sample menu data
+// --------------------------
+// SAMPLE MENU DATA
+// --------------------------
 const MENU = [
   {id:1,name:'Margherita Pizza',cat:'mains',price:12,veg:true,desc:'Classic pizza with tomato, mozzarella & basil',emoji:'🍕'},
   {id:2,name:'Garlic Bread',cat:'starters',price:6,veg:true,desc:'Toasted bread with garlic butter',emoji:'🥖'},
@@ -11,16 +13,23 @@ const MENU = [
   {id:9,name:'Tiramisu',cat:'dessert',price:8,veg:true,desc:'Coffee-soaked ladyfingers & mascarpone',emoji:'☕'},
 ];
 
-// Cart state
+// --------------------------
+// CART STATE
+// --------------------------
 let cart = JSON.parse(localStorage.getItem('delish_cart') || '[]');
 
-// Correct element references
-const cartIcon = document.getElementById('cartIcon');       // cart button
-const cartCountEl  = document.getElementById('cartCount'); // counter
-const cartDrawer   = document.getElementById('cartDrawer');// drawer
-const cartListEl   = document.getElementById('cartItems');// items container
-const cartTotalEl  = document.getElementById('cartTotal');// total
-const closeDrawerBtn = document.getElementById('closeCart');// close button
+// --------------------------
+// DOM ELEMENTS
+// --------------------------
+const cartIcon = document.getElementById('cartIcon');
+const cartCountEl  = document.getElementById('cartCount');
+const cartDrawer   = document.getElementById('cartDrawer');
+const cartListEl   = document.getElementById('cartItems');
+const cartTotalEl  = document.getElementById('cartTotal');
+const closeDrawerBtn = document.getElementById('closeCart');
+const mobileMenuBtn = document.getElementById('mobile-menu');
+const navLinks = document.getElementById('nav-links');
+const themeBtn = document.getElementById('theme-toggle');
 
 // --------------------------
 // MENU RENDER
@@ -57,7 +66,9 @@ function renderMenu(filter='all', vegOnly=false){
 
 renderMenu();
 
-// Category filter
+// --------------------------
+// MENU FILTERS
+// --------------------------
 document.querySelectorAll('.chip').forEach(ch => {
   ch.addEventListener('click', () => {
     document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
@@ -66,7 +77,6 @@ document.querySelectorAll('.chip').forEach(ch => {
   });
 });
 
-// Veg-only filter
 document.getElementById('veg-only').addEventListener('change', (e) => {
   const active = document.querySelector('.chip.active');
   renderMenu(active.dataset.type, e.target.checked);
@@ -143,33 +153,17 @@ function removeItem(id){
   saveCart();
 }
 
-// Clear cart
-document.getElementById('clear-cart')?.addEventListener('click', () => {
-  cart = [];
-  saveCart();
-});
-
-// Checkout (demo)
-document.getElementById('checkout')?.addEventListener('click', () => {
-  if(cart.length === 0){
-    alert("Cart is empty");
-    return;
-  }
-  alert("Thanks! Order received.");
-  cart = [];
-  saveCart();
-});
-
-// Open / Close drawer
 function openCart(){
   cartDrawer.classList.add('open');
   renderCart();
 }
+
 cartIcon.addEventListener('click', openCart);
 closeDrawerBtn.addEventListener('click', ()=> cartDrawer.classList.remove('open'));
 
 // --------------------------
 // MODAL (ITEM DETAILS)
+// --------------------------
 function openDetails(id){
   const m = MENU.find(x=>x.id===id);
   const modal = document.getElementById('modal-content');
@@ -192,6 +186,7 @@ function openDetails(id){
 function closeModal(){
   document.getElementById('modal-back').style.display = 'none';
 }
+
 document.getElementById('modal-back').addEventListener('click', (e)=>{
   if(e.target.id==='modal-back') closeModal();
 });
@@ -199,7 +194,7 @@ document.getElementById('close-modal').addEventListener('click', closeModal);
 
 // --------------------------
 // THEME TOGGLE
-const themeBtn = document.getElementById('theme-toggle');
+// --------------------------
 themeBtn.addEventListener('click', ()=>{
   if(document.documentElement.getAttribute('data-theme')==='dark'){
     document.documentElement.removeAttribute('data-theme');
@@ -209,27 +204,22 @@ themeBtn.addEventListener('click', ()=>{
     localStorage.setItem('delish_theme','dark');
   }
 });
+
 if(localStorage.getItem('delish_theme')==='dark'){
   document.documentElement.setAttribute('data-theme','dark');
 }
 
 // --------------------------
-// MOBILE MENU
-const mobile = document.getElementById('mobile-menu');
-mobile.addEventListener('click', ()=>{
-  const nav = document.getElementById('nav-links');
-  nav.style.display = (nav.style.display==='flex') ? 'none':'flex';
-  nav.style.flexDirection = 'column';
-  nav.style.background = 'var(--glass)';
-  nav.style.padding = '10px';
-  nav.style.position = 'absolute';
-  nav.style.right = '12px';
-  nav.style.top = '64px';
-  nav.style.borderRadius = '10px';
+// MOBILE MENU TOGGLE
+// --------------------------
+mobileMenuBtn.addEventListener('click', () => {
+  navLinks.classList.toggle('open'); // toggle the 'open' class
 });
 
+
 // --------------------------
-// Expose some functions globally
+// EXPOSE FUNCTIONS GLOBALLY
+// --------------------------
 window.addToCart = addToCart;
 window.openCart = openCart;
 window.closeModal = closeModal;
