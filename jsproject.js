@@ -2,15 +2,15 @@
 // SAMPLE MENU DATA
 // --------------------------
 const MENU = [
-  {id:1,name:'Margherita Pizza',cat:'mains',price:12,veg:true,desc:'Classic pizza with tomato, mozzarella & basil',emoji:'🍕'},
-  {id:2,name:'Garlic Bread',cat:'starters',price:6,veg:true,desc:'Toasted bread with garlic butter',emoji:'🥖'},
-  {id:3,name:'Butter Chicken',cat:'mains',price:14,veg:false,desc:'Creamy spiced tomato gravy with tender chicken',emoji:'🍛'},
-  {id:4,name:'Caesar Salad',cat:'starters',price:8,veg:false,desc:'Romaine, parmesan, croutons & Caesar dressing',emoji:'🥗'},
-  {id:5,name:'Chocolate Lava Cake',cat:'dessert',price:7,veg:true,desc:'Warm molten cake with vanilla ice cream',emoji:'🍰'},
-  {id:6,name:'Cold Brew',cat:'drinks',price:4,veg:true,desc:'Slow-brewed coffee, chilled',emoji:'🥤'},
-  {id:7,name:'Paneer Tikka',cat:'starters',price:9,veg:true,desc:'Smoky grilled paneer with spices',emoji:'🧀'},
-  {id:8,name:'Pepperoni Pizza',cat:'mains',price:13,veg:false,desc:'Pepperoni, cheese & tomato',emoji:'🍕'},
-  {id:9,name:'Tiramisu',cat:'dessert',price:8,veg:true,desc:'Coffee-soaked ladyfingers & mascarpone',emoji:'☕'},
+  {id:1,name:'Margherita Pizza',cat:'mains',price:399,veg:true,desc:'Classic pizza with tomato, mozzarella & basil',emoji:'🍕'},
+  {id:2,name:'Garlic Bread',cat:'starters',price:499,veg:true,desc:'Toasted bread with garlic butter',emoji:'🥖'},
+  {id:3,name:'Butter Chicken',cat:'mains',price:399,veg:false,desc:'Creamy spiced tomato gravy with tender chicken',emoji:'🍛'},
+  {id:4,name:'Caesar Salad',cat:'starters',price:199,veg:false,desc:'Romaine, parmesan, croutons & Caesar dressing',emoji:'🥗'},
+  {id:5,name:'Chocolate Lava Cake',cat:'dessert',price:199,veg:true,desc:'Warm molten cake with vanilla ice cream',emoji:'🍰'},
+  {id:6,name:'Cold Brew',cat:'drinks',price:159,veg:true,desc:'Slow-brewed coffee, chilled',emoji:'🥤'},
+  {id:7,name:'Paneer Tikka',cat:'starters',price:299,veg:true,desc:'Smoky grilled paneer with spices',emoji:'🧀'},
+  {id:8,name:'Pepperoni Pizza',cat:'mains',price:399,veg:false,desc:'Pepperoni, cheese & tomato',emoji:'🍕'},
+  {id:9,name:'Tiramisu',cat:'dessert',price:699,veg:true,desc:'Coffee-soaked ladyfingers & mascarpone',emoji:'☕'},
 ];
 
 // --------------------------
@@ -53,7 +53,7 @@ function renderMenu(filter='all', vegOnly=false){
         <div class="muted" style="font-size:13px">${it.desc}</div>
       </div>
       <div style="text-align:right">
-        <div class="price">$${it.price.toFixed(2)}</div>
+        <div class="price">₹${it.price.toFixed(2)}</div>
         <div style="margin-top:8px">
           <button class="ghost" onclick="openDetails(${it.id})">Details</button>
           <button class="add" onclick="addToCart(${it.id})">Add</button>
@@ -121,7 +121,7 @@ function renderCart(){
     el.innerHTML = `
       <div>
         <strong>${it.name}</strong>
-        <div class="muted">$${it.price.toFixed(2)} each</div>
+        <div class="muted">₹${it.price.toFixed(2)} each</div>
       </div>
       <div style="text-align:right">
         <div class="qty">
@@ -129,7 +129,7 @@ function renderCart(){
           <div style="min-width:22px;text-align:center">${it.qty}</div>
           <button class="icon-btn" onclick="changeQty(${it.id},1)">+</button>
         </div>
-        <div style="margin-top:8px">$${(it.price * it.qty).toFixed(2)}</div>
+        <div style="margin-top:8px">₹${(it.price * it.qty).toFixed(2)}</div>
         <button class="ghost" style="margin-top:8px" onclick="removeItem(${it.id})">Remove</button>
       </div>
     `;
@@ -137,7 +137,7 @@ function renderCart(){
   });
 
   cartCountEl.textContent = cart.reduce((s,i)=>s+i.qty, 0);
-  cartTotalEl.textContent = total.toFixed(2);
+  cartTotalEl.textContent = "₹" + total.toFixed(2);
 }
 
 function changeQty(id, delta){
@@ -173,7 +173,7 @@ function openDetails(id){
       <div>
         <h3>${m.name}</h3>
         <p class='muted'>${m.desc}</p>
-        <p style='font-weight:900'>$${m.price.toFixed(2)}</p>
+        <p style='font-weight:900'>₹${m.price.toFixed(2)}</p>
         <div style='margin-top:10px'>
           <button class='add' onclick='addToCart(${m.id}); closeModal();'>Add to cart</button>
         </div>
