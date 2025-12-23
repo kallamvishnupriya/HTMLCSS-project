@@ -284,3 +284,8 @@ document.getElementById('reserve-form').addEventListener('submit', e=>{
     // Your existing reservation code here
   }
 });
+
+let procedbtn=document.getElementById("proced-to-pay")
+procedbtn.addEventListener("click",function(){
+  alert("payment done successfully you order will receive soon")
+})
